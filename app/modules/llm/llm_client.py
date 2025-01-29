@@ -3,13 +3,12 @@ import os
 from abc import ABC, abstractmethod
 from typing import List
 
-from llm.types import Chat
+from modules.llm.types import Chat
 
 
 class LLMClient(ABC):
-    def __init__(self, model_path: str, n_gpu_layers: int = -1):
-        self.model_path = model_path
-        self.n_gpu_layers = n_gpu_layers
+    def __init__(self):
+        pass
 
     @abstractmethod
     def get_chat_response(self, chats: List[Chat]) -> str:

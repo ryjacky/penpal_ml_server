@@ -1,11 +1,11 @@
 from typing import List
-from app.modules.llm.llm_client import Endpoints
-from app.modules.llm.types import Chat
+from modules.llm.llm_client import LLMClient
+from modules.llm.types import Chat
 
 
-class PrototypeLLMClient(Endpoints):
-    def __init__(self, model_path: str, n_gpu_layers: int = -1):
-        super().__init__(model_path, n_gpu_layers)
+class PrototypeLLMClient(LLMClient):
+    def __init__(self):
+        pass
 
     def get_chat_response(self, chats: List[Chat]) -> str:
         return "This is a hardcoded chat response."

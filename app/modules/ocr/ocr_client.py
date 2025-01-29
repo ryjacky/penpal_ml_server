@@ -5,7 +5,7 @@ from typing import List
 from PIL import Image
 
 class OCRClient(ABC):
-    def __init__(self, model_path: str, n_gpu_layers: int = -1):
+    def __init__(self):
         self.model_path = model_path
         self.n_gpu_layers = n_gpu_layers
 

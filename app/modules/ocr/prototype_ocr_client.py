@@ -3,12 +3,12 @@ import os
 from abc import ABC, abstractmethod
 from typing import List
 from PIL import Image
-from app.modules.ocr.ocr_client import OCRClient
+from modules.ocr.ocr_client import OCRClient
 
 
 class PrototypeOCRClient(OCRClient):
-    def __init__(self, model_path: str, n_gpu_layers: int = -1):
-        super().__init__(model_path, n_gpu_layers)
+    def __init__(self):
+        pass
 
     def extract_writing(self, image: Image) -> str:
         # Hardcoded output

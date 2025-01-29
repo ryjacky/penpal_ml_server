@@ -1,9 +1,10 @@
 from typing import Annotated
 
 from PIL.Image import Image
-from app.modules.ocr.ocr_client import OCRClient
-from app.modules.ocr.prototype_ocr_client import PrototypeOCRClient
-from app.modules.ocr.types import ImageContent
+from modules.auth.authorization import validate_session_with_supabase
+from modules.ocr.ocr_client import OCRClient
+from modules.ocr.prototype_ocr_client import PrototypeOCRClient
+from modules.ocr.types import ImageContent
 from fastapi import APIRouter, UploadFile, Depends, HTTPException
 
 ocr_router = APIRouter(prefix="/ocr")

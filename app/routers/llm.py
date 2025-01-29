@@ -1,9 +1,9 @@
 from typing import List, Annotated
 
-from app.modules.auth.authorization import validate_session_with_supabase
-from app.modules.llm.llm_client import LLMClient
-from app.modules.llm.prototype_llm_client import PrototypeLLMClient
-from app.modules.llm.types import Chat, ChatSummary, Pal
+from modules.auth.authorization import validate_session_with_supabase
+from modules.llm.llm_client import LLMClient
+from modules.llm.prototype_llm_client import PrototypeLLMClient
+from modules.llm.types import Chat, ChatSummary, Pal
 from fastapi import APIRouter, Depends
 
 llm_router = APIRouter(prefix="/llm")
