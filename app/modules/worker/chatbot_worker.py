@@ -51,7 +51,8 @@ async def chatbot_worker():
     # Setup the broadcast socket and channel
     socket = AsyncRealtimeClient(f"{URL}/realtime/v1", JWT, auto_reconnect=True)
     ssl._create_default_https_context = ssl._create_unverified_context()
+    print("Chatbot worker is up and running")
+
     await socket.connect()
 
     await test_postgres_changes(socket)
-
