@@ -4,7 +4,8 @@ import ssl
 
 from realtime import AsyncRealtimeChannel, AsyncRealtimeClient
 
-from utils import is_bot, insert_message
+from modules.worker.utils import insert_message, is_bot
+
 
 
 def postgres_changes_callback(payload, *args):
@@ -43,7 +44,7 @@ async def test_postgres_changes(socket: AsyncRealtimeClient):
     await socket.listen()
 
 
-async def main():
+async def chatbot_worker():
     URL = os.getenv("SUPABASE_URL")
     JWT = os.getenv("SUPABASE_KEY")
 
@@ -54,4 +55,3 @@ async def main():
 
     await test_postgres_changes(socket)
 
-asyncio.run(main())
