@@ -17,4 +17,4 @@ COPY ./app .
 EXPOSE 8000
 
 # Run the main application file using Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["fastapi", "run"]
