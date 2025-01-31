@@ -20,3 +20,6 @@ class Pal(BaseModel):
 class Chat(BaseModel):
     role: Literal["system", "user", "assistant"]
     content: str
+
+    def __str__(self) -> str:
+        return f"{self.role}: {self.content}"

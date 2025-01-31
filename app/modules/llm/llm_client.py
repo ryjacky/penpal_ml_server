@@ -1,7 +1,7 @@
 import json
 import os
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Literal
 
 from modules.llm.types import Chat
 
@@ -11,7 +11,7 @@ class LLMClient(ABC):
         pass
 
     @abstractmethod
-    def get_chat_response(self, chats: List[Chat]) -> str:
+    def get_chat_response(self, chats: List[Chat], name: str, background: str, writing_prompt: str) -> str:
         pass
 
     @abstractmethod
@@ -19,9 +19,13 @@ class LLMClient(ABC):
         pass
 
     @abstractmethod
-    def generate_pals(self, chats: List[Chat]) -> str:
+    def generate_pals(self, essay_prompt: str) -> str:
         pass
 
     @abstractmethod
-    def get_writing_suggestion(self, chats: List[Chat]) -> str:
+    def get_writing_suggestion(
+            self,
+            writing: str,
+            grading_aspect: Literal["language", "organization", "content"],
+            ) -> str:        
         pass
