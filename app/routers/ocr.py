@@ -43,4 +43,4 @@ async def get_text(
     #     result.content += f" {recognize_text(line_seg.image)}"
     #     print(f"Recognized text: {recognize_text(line_seg.image)}")
 
-    return client.extract_writing(image)
+    return ImageContent(content=client.extract_writing(image))
