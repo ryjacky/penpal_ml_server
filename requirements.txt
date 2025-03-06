@@ -5,3 +5,4 @@ opencv-python==4.11.0.86
 numpy==2.2.3
 fastapi==0.115.7
 fastapi-cli==0.0.7
+python-multipart==0.0.20
