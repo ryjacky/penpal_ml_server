@@ -7,6 +7,8 @@ from modules.ocr.prototype_ocr_client import PrototypeOCRClient
 from modules.ocr.types import ImageContent
 from fastapi import APIRouter, UploadFile, Depends, HTTPException
 
+from app.modules.ocr.preprocessing import pre_process_image
+
 ocr_router = APIRouter(prefix="/ocr")
 client: OCRClient = PrototypeOCRClient()
 
@@ -21,13 +23,13 @@ async def get_text(
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Invalid file type, only images are allowed")
 
-    # print(f"Reading image...")
-    # b_image = await file.read()
+    print(f"Reading image...")
+    b_image = await file.read()
 
-    # print(f"Preprocessing image...")
-    # image: Image = pre_process_image(b_image)
-    # image.save("runtime_image.jpg")
-    # print(f"Preprocessing complete. Detecting text...")
+    print(f"Preprocessing image...")
+    image: Image = pre_process_image(b_image)
+    image.save("runtime_image.jpg")
+    print(f"Preprocessing complete. Detecting text...")
 
     # word_segs = get_word_segments(image)
     # print(f"Found {len(word_segs)} words.")
@@ -41,4 +43,4 @@ async def get_text(
     #     result.content += f" {recognize_text(line_seg.image)}"
     #     print(f"Recognized text: {recognize_text(line_seg.image)}")
 
-    return client.extract_writing()
+    return client.extract_writing(image)
