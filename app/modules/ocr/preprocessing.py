@@ -2,7 +2,7 @@ from io import BytesIO
 
 import cv2
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageOps
 
 
 def pre_process_image(img_bytes: bytes) -> Image:
@@ -12,6 +12,7 @@ def pre_process_image(img_bytes: bytes) -> Image:
     # Normally, people include binarization in preprocessing, but we'll skip it as it is creating noises and
     # making text detection less accurate
     img = scale_down(img)
+    img = np.array(img)
     img = normalize_image(img)
     img = grayscale_image(img)
     img = remove_noise(img, False)
@@ -23,31 +24,16 @@ def scale_down(image: np.array) -> Image:
     """Scales an image to fit within a specific width and height while maintaining aspect ratio using OpenCV.
 
         Args:
-            image_path (str): Path to the image file.
-            target_width (int): Desired width of the scaled image.
-            target_height (int): Desired height of the scaled image.
+            image (numpy.ndarray): The input image as a NumPy array.
 
         Returns:
             numpy.ndarray: The scaled image as a NumPy array.
         """
 
 
-    # Get original dimensions
-    original_height, original_width = image.shape[:2]
+    img = Image.fromarray(image)
 
-    # Calculate scaling factors
-    width_ratio = 1080 / original_width
-    height_ratio = 1920 / original_height
-    scale_factor = min(width_ratio, height_ratio)
-
-    # Calculate new dimensions
-    new_width = int(original_width * scale_factor)
-    new_height = int(original_height * scale_factor)
-
-    # Resize the image
-    resized_image = cv2.resize(image, (new_width, new_height))
-
-    return resized_image
+    return ImageOps.contain(img, (720, 720))
 
 
 def normalize_image(img: np.array) -> Image:
