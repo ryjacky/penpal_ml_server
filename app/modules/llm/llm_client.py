@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from modules.llm.types import Chat
+from modules.llm.types import Pal
 
 
 class LLMClient(ABC):
@@ -19,9 +20,17 @@ class LLMClient(ABC):
         pass
 
     @abstractmethod
-    def generate_pals(self, chats: List[Chat]) -> str:
+    def generate_pals(self, prompt: str) -> Pal:
         pass
 
     @abstractmethod
-    def get_writing_suggestion(self, chats: List[Chat]) -> str:
+    def get_language_suggestion(self, writing: str) -> str:
+        pass
+
+    @abstractmethod
+    def get_content_suggestion(self, writing: str) -> str:
+        pass
+
+    @abstractmethod
+    def get_organization_suggestion(self, writing: str) -> str:
         pass

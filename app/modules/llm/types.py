@@ -20,3 +20,9 @@ class Pal(BaseModel):
 class Chat(BaseModel):
     role: Literal["system", "user", "assistant"]
     content: str
+
+
+class WritingSuggestion(BaseModel):
+    lang_suggestion: str
+    org_suggestion: str
+    content_suggestion: str
