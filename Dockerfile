@@ -1,5 +1,6 @@
 # Use the official Python image from the Docker Hub
 FROM python:3.11-slim
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 # Set the working directory inside the container
 WORKDIR /app

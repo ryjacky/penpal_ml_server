@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageChops
 
-from app.modules.ocr.preprocessing import pre_process_image, normalize_image, grayscale_image
+from modules.ocr.preprocessing import pre_process_image, normalize_image, grayscale_image
 
 
 class PreprocessingTestCase(unittest.TestCase):

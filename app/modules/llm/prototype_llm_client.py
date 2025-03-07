@@ -1,11 +1,11 @@
 from typing import List
 from modules.llm.llm_client import LLMClient
-from modules.llm.types import Chat
+from modules.llm.types import Chat, Pal
 
 
 class PrototypeLLMClient(LLMClient):
     def __init__(self):
-        pass
+        super().__init__()
 
     def get_chat_response(self, chats: List[Chat]) -> str:
         return "This is a hardcoded chat response."
@@ -13,8 +13,14 @@ class PrototypeLLMClient(LLMClient):
     def summarize_chat(self, chats: List[Chat]) -> str:
         return "This is a summary of the chat."
 
-    def generate_pals(self, chats: List[Chat]) -> str:
-        return "Here are some generated PALs."
+    def generate_pals(self, prompt: str) -> Pal:
+        return Pal(name="John Doe", occupation="Writer", description="This is a hard coded PAL.")
 
-    def get_writing_suggestion(self, chats: List[Chat]) -> str:
-        return "You can try writing about the following topics: topic1, topic2, topic3."
+    def get_language_suggestion(self, writing: str) -> str:
+        return "The language is very very good, this is hard coded"
+
+    def get_content_suggestion(self, writing: str) -> str:
+        return "The content is very very good, this is hard coded"
+
+    def get_organization_suggestion(self, writing: str) -> str:
+        return "The organization is very very good, this is hard coded"
