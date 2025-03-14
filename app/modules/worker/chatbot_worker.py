@@ -4,8 +4,10 @@ import ssl
 
 from realtime import AsyncRealtimeChannel, AsyncRealtimeClient
 
-from modules.worker.utils import insert_message, is_bot
+from modules.worker.utils import get_message, get_chats, insert_message
+from modules.llm.llm_client import LLMClient
 
+llm_client = LLMClient()
 
 
 def postgres_changes_callback(payload, *args):
@@ -14,6 +16,11 @@ def postgres_changes_callback(payload, *args):
 
 def postgres_changes_insert_callback(payload, *args):
     print("INSERT: ", payload)
+    journey_message_id = payload["data"]["record"]["id"]
+    journey_id, content, is_from_user, user_id = get_message(journey_message_id)
+    if is_from_user:
+        insert_message(journey_id, user_id, llm_client)
+        print("New message inserted.")
 
 
 def postgres_changes_delete_callback(payload, *args):
@@ -21,10 +28,6 @@ def postgres_changes_delete_callback(payload, *args):
 
 
 def postgres_changes_update_callback(payload, *args):
-    inbox_id = payload["data"]["record"]["id"]
-    user_id = is_bot(inbox_id)
-    if user_id:
-        insert_message(inbox_id, user_id)
     print("UPDATE: ", payload)
 
 
@@ -37,11 +40,8 @@ async def test_postgres_changes(socket: AsyncRealtimeClient):
     channel = socket.channel("test-postgres-changes")
 
     await channel.on_postgres_changes(
-
-        "UPDATE", table="inbox", callback=postgres_changes_update_callback
+        "INSERT", table="journey_messages", callback=postgres_changes_insert_callback
     ).subscribe()
-
-    await socket.listen()
 
 
 async def chatbot_worker():
