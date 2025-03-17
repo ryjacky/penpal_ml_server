@@ -1,3 +1,5 @@
+# Modified from https://github.com/supabase/realtime-py/blob/v2.2.0/example/app.py
+
 import asyncio
 import os
 import ssl
@@ -43,6 +45,8 @@ async def test_postgres_changes(socket: AsyncRealtimeClient):
         "INSERT", table="journey_messages", callback=postgres_changes_insert_callback
     ).subscribe()
 
+    await socket.listen()
+
 
 async def chatbot_worker():
     URL = os.getenv("SUPABASE_URL")
@@ -56,3 +60,6 @@ async def chatbot_worker():
     await socket.connect()
 
     await test_postgres_changes(socket)
+
+    # Cleanup
+    await socket.remove_all_channels()
