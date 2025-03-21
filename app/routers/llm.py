@@ -9,27 +9,6 @@ import clients as clients
 
 llm_router = APIRouter(prefix="/llm")
 
-@llm_router.post("/reply")
-def chat(
-        chats: List[Chat],
-        credentials: Annotated[str, Depends(validate_session_with_supabase)]) -> List[Chat]:
-    """
-    Receive a list of chat messages and return a list of chat messages with the bot's response.
-    The last message in the list will be the bot's response.
-    """
-    return chats + [Chat(role="assistant", content=clients.chat_client.get_chat_response(chats))]
-
-
-@llm_router.post("/chat_summary")
-async def summarize(
-        chats: List[Chat],
-        credentials: Annotated[str, Depends(validate_session_with_supabase)]) -> ChatSummary:
-    """
-    It receives a message in ChatML format and returns a response in ChatML format with a summary
-     as the last bot message.
-    """
-    return ChatSummary(summary=clients.chat_client.summarize_chat(chats))
-
 
 @llm_router.post("/pals")
 async def get_pals(
