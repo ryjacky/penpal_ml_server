@@ -15,7 +15,7 @@ class VLLMClient(LLMClient):
 
         )
 
-        self.model_name = "Qwen/Qwen2.5-7B-Instruct"
+        self.model_name = "fyp-penpal-text"
 
     def send(self, user_input: str, system: str) -> str:
         completion = self.client.chat.completions.create(
