@@ -1,16 +1,15 @@
 # Modified from https://github.com/supabase/realtime-py/blob/v2.2.0/example/app.py
 
 import asyncio
-import os
 import ssl
 
 from realtime import AsyncRealtimeChannel, AsyncRealtimeClient
 
 from modules.worker.utils import get_message, get_chats, insert_message
-from modules.llm.llm_client import LLMClient
+import clients as clients
+import os
 
-llm_client = LLMClient()
-
+from modules.worker.types import JourneyMessage
 
 def postgres_changes_callback(payload, *args):
     print("*: ", payload)
@@ -19,9 +18,9 @@ def postgres_changes_callback(payload, *args):
 def postgres_changes_insert_callback(payload, *args):
     print("INSERT: ", payload)
     journey_message_id = payload["data"]["record"]["id"]
-    journey_id, content, is_from_user, user_id = get_message(journey_message_id)
-    if is_from_user:
-        insert_message(journey_id, user_id, llm_client)
+    message: JourneyMessage = get_message(journey_message_id)
+    if message.is_from_user:
+        insert_message(message.journey_id, message.user_id, clients.chat_client)
         print("New message inserted.")
 
 
@@ -49,6 +48,7 @@ async def test_postgres_changes(socket: AsyncRealtimeClient):
 
 
 async def chatbot_worker():
+
     URL = os.getenv("SUPABASE_URL")
     JWT = os.getenv("SUPABASE_KEY")
 
