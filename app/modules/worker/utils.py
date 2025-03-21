@@ -25,8 +25,22 @@ def get_chats(journey_id) -> list[Chat]:
             chats.append(chat)
     return chats
 
-def insert_message(journey_id, user_id, client: LLMClient):
-    journey_chats = get_chats(journey_id)
-    response = client.get_chat_response(journey_chats)
+def insert_message(journey_id, user_id):
+    journey_chats: list[Chat] = get_chats(journey_id)
+    journey_info = clients.supabase_client.table("journey").select("id, essay_title, chatbot_name, chatbot_description, summaries").eq("id", journey_id).execute().data[0]
+    if journey_info["summaries"] is not None:
+        print("The chat has completed, not generating new replies.")
+        return
+
+    if journey_chats[-1].content == "/end":
+        create_summary(journey_id, journey_chats, journey_info["chatbot_name"])
+        return
+
+    response = clients.chat_client.get_chat_response(journey_chats, bot_name=journey_info["chatbot_name"], bot_bg=journey_info["chatbot_description"], writing_prompt=journey_info["essay_title"])
+
     new_message = {"journey_id": journey_id, "content": response, "is_from_user": False, "user_id": user_id}
     clients.supabase_client.table("journey_messages").insert(new_message).execute()
+
+def create_summary(journey_id, journey_chats: list[Chat], bot_name):
+    response = clients.chat_client.summarize_chat(journey_chats, bot_name=bot_name)
+    clients.supabase_client.table("journey").update({"summaries": response}).eq("id", journey_id).execute()
