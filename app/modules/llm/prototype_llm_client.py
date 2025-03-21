@@ -7,10 +7,10 @@ class PrototypeLLMClient(LLMClient):
     def __init__(self):
         super().__init__()
 
-    def get_chat_response(self, chats: List[Chat]) -> str:
+    def get_chat_response(self, chats: List[Chat], bot_name: str, bot_bg: str, writing_prompt: str) -> str:
         return "This is a hardcoded chat response."
 
-    def summarize_chat(self, chats: List[Chat]) -> str:
+    def summarize_chat(self, chats: List[Chat], bot_name: str) -> str:
         return "This is a summary of the chat."
 
     def generate_pals(self, prompt: str) -> Pal:

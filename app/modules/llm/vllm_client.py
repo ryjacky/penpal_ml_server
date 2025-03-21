@@ -28,19 +28,14 @@ class VLLMClient(LLMClient):
         )
         return completion.choices[0].message.content
 
-    def get_chat_response(self, chats: List[Chat], bot_name: str = None, bot_bg: str = None, writing_prompt: str = None) -> str:
-        if bot_name is None or bot_bg is None or writing_prompt is None:
-            raise ValueError("bot_name, bot_bg, and writing_prompt must be provided.")
-
+    def get_chat_response(self, chats: List[Chat], bot_name: str, bot_bg: str, writing_prompt: str) -> str:
         formatted_chats = (["1. User: Hi, can we talk about the essay topic? We can perhaps deep dive into the topic together?"] +
                            [f"{i + 2}. {bot_name}: {chat.content}" for i, chat in enumerate(chats)])
         prompt = f"# Task\n- Pretend that your are {bot_name}, respond to the chat based on the provided information.\n# {bot_name}'s Background\n- {bot_bg} \n\n# Rules\n- Only output {bot_name}'s response without any explanation.\n- Output format should be `<chat_round>. {bot_name}: <response>`\n- Be natural and simulate a real world chat.\n# Context\nYou are having a **deep dive** chat with \"User\" about the writing prompt - \"{writing_prompt}\"\nYou want to share how would you write a passage about the writing prompt, what you think about the writing prompt, or anything you want to share with the user about the writing prompt. Make use of your own knowledge and experience. Don't be afraid to make up your experience beyound the given background, be creative.\n# **Chat**\n{"\n".join(formatted_chats)}"
         return self.send(prompt, "You are a professional actor, who is good at role-playing different characters based on the provided background, at the same time, you strictly follows the restrictions.")
 
 
-    def summarize_chat(self, chats: List[Chat], bot_name: str = None) -> str:
-        if bot_name is None:
-            raise ValueError("bot_name must be provided.")
+    def summarize_chat(self, chats: List[Chat], bot_name: str) -> str:
 
         formatted_chats = (["1. User: Hi, can we talk about the essay topic? We can perhaps deep dive into the topic together?"] +
                            [f"{i + 2}. {bot_name}: {chat.content}" for i, chat in enumerate(chats)])
