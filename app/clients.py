@@ -8,4 +8,9 @@ from modules.llm.prototype_llm_client import PrototypeLLMClient
 
 supabase_client: Client = create_client(os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_KEY"))
 
-chat_client: LLMClient = VLLMClient()
+mode = os.getenv("MODE")
+
+if mode == "VLLM":
+    chat_client: LLMClient = VLLMClient()
+else:
+    chat_client: LLMClient = PrototypeLLMClient()
