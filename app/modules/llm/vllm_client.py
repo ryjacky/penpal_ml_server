@@ -49,7 +49,7 @@ class VLLMClient(LLMClient):
 
         return Pal(
             name=raw_pal[0].replace("Character name:", "").strip(),
-            occupation="Writer",
+            occupation="---",
             description=raw_pal[1].strip(),)
 
     def get_language_suggestion(self, writing: str) -> str:
