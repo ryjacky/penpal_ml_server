@@ -43,7 +43,7 @@ class VLLMClient(LLMClient):
         return self.send(prompt, "You are a helpful linguistic, who is good at writing useful chat summaries.")
 
     def generate_pals(self, prompt: str) -> Pal:
-        prompt = f"You are provided with the following essay prompt:\n\"{prompt}\"\n\nImagine someone who is interested in this essay topic, and create a character that relates to the topic. Provide both his **name**, and his **detailed** background.\nYou also need to explain why the character might be interested in the topic step-by-step, quote the essay prompt if needed."
+        prompt = f"You are provided with the following essay prompt:\n\"{prompt}\"\n\nImagine someone who is interested in this essay topic, and create a character that relates to the topic. Provide both his **name**, and his **detailed** background."
         raw_pal = self.send(prompt, "You are a helpful character designer, who is good at creating characters with depth based on any information.")
         raw_pal = raw_pal.split("Character background:")
 
