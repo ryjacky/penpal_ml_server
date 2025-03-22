@@ -18,17 +18,3 @@ async def get_pals(
     Receives an essay prompt and returns an array of three character profiles based on the prompt.
     """
     return [clients.chat_client.generate_pals(prompt)]
-
-@llm_router.post("/suggestion")
-async  def get_writing_suggestion(
-        writing: str,
-        credentials: Annotated[str, Depends(validate_session_with_supabase)]) -> WritingSuggestion:
-    """
-    Receives a written essay and returns a list of generated suggestions about the writing.
-    """
-
-    return WritingSuggestion(
-        lang_suggestion=clients.chat_client.get_language_suggestion(writing),
-        org_suggestion=clients.chat_client.get_organization_suggestion(writing),
-        content_suggestion=clients.chat_client.get_content_suggestion(writing)
-    )

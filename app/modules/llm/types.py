@@ -23,6 +23,9 @@ class Chat(BaseModel):
 
 
 class WritingSuggestion(BaseModel):
+    lang_mark: int
+    org_mark: int
+    content_mark: int
     lang_suggestion: str
     org_suggestion: str
     content_suggestion: str

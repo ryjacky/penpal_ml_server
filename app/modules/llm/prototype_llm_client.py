@@ -16,11 +16,11 @@ class PrototypeLLMClient(LLMClient):
     def generate_pals(self, prompt: str) -> Pal:
         return Pal(name="John Doe", occupation="Writer", description="This is a hard coded PAL.")
 
-    def get_language_suggestion(self, writing: str) -> str:
+    def get_language_suggestion(self, writing: str, writing_prompt: str) -> str:
         return "The language is very very good, this is hard coded"
 
-    def get_content_suggestion(self, writing: str) -> str:
+    def get_content_suggestion(self, writing: str, writing_prompt: str) -> str:
         return "The content is very very good, this is hard coded"
 
-    def get_organization_suggestion(self, writing: str) -> str:
+    def get_organization_suggestion(self, writing: str, writing_prompt: str) -> str:
         return "The organization is very very good, this is hard coded"

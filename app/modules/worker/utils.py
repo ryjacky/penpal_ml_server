@@ -25,9 +25,12 @@ def get_chats(journey_id) -> list[Chat]:
             chats.append(chat)
     return chats
 
+def get_journey_info(journey_id):
+    return clients.supabase_client.table("journey").select("id, essay_title, chatbot_name, chatbot_description, summaries").eq("id", journey_id).execute().data[0]
+
 def insert_message(journey_id, user_id):
     journey_chats: list[Chat] = get_chats(journey_id)
-    journey_info = clients.supabase_client.table("journey").select("id, essay_title, chatbot_name, chatbot_description, summaries").eq("id", journey_id).execute().data[0]
+    journey_info = get_journey_info(journey_id)
     if journey_info["summaries"] is not None:
         print("The chat has completed, not generating new replies.")
         return
@@ -43,5 +46,6 @@ def insert_message(journey_id, user_id):
     clients.supabase_client.table("journey_messages").insert(new_message).execute()
 
 def create_summary(journey_id, journey_chats: list[Chat], bot_name):
+    clients.supabase_client.table("journey").update({"summaries": "Generating summaries..."}).eq("id", journey_id).execute()
     response = clients.chat_client.summarize_chat(journey_chats, bot_name=bot_name)
     clients.supabase_client.table("journey").update({"summaries": response}).eq("id", journey_id).execute()

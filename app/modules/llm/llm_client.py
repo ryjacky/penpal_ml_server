@@ -24,13 +24,13 @@ class LLMClient(ABC):
         pass
 
     @abstractmethod
-    def get_language_suggestion(self, writing: str) -> str:
+    def get_language_suggestion(self, writing: str, writing_prompt: str) -> str:
         pass
 
     @abstractmethod
-    def get_content_suggestion(self, writing: str) -> str:
+    def get_content_suggestion(self, writing: str, writing_prompt: str) -> str:
         pass
 
     @abstractmethod
-    def get_organization_suggestion(self, writing: str) -> str:
+    def get_organization_suggestion(self, writing: str, writing_prompt: str) -> str:
         pass
