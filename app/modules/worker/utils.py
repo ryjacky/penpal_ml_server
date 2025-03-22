@@ -36,7 +36,8 @@ def insert_message(journey_id, user_id):
         create_summary(journey_id, journey_chats, journey_info["chatbot_name"])
         return
 
-    response = clients.chat_client.get_chat_response(journey_chats, bot_name=journey_info["chatbot_name"], bot_bg=journey_info["chatbot_description"], writing_prompt=journey_info["essay_title"])
+    response: str = clients.chat_client.get_chat_response(journey_chats, bot_name=journey_info["chatbot_name"], bot_bg=journey_info["chatbot_description"], writing_prompt=journey_info["essay_title"])
+    response = response.split(":", 1)[-1].strip()
 
     new_message = {"journey_id": journey_id, "content": response, "is_from_user": False, "user_id": user_id}
     clients.supabase_client.table("journey_messages").insert(new_message).execute()
