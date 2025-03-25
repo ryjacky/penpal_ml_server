@@ -6,9 +6,8 @@ from PIL import Image
 
 class OCRClient(ABC):
     def __init__(self):
-        self.model_path = model_path
-        self.n_gpu_layers = n_gpu_layers
+        pass
 
     @abstractmethod
-    def extract_writing(self, image: Image) -> str:
+    def extract_writing(self, url: str) -> str:
         pass
