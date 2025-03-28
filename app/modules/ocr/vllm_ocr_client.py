@@ -5,7 +5,9 @@ from typing import List
 from PIL import Image
 from modules.ocr.ocr_client import OCRClient
 from openai import OpenAI
+import logging
 
+logger = logging.getLogger(__name__)
 
 class VllmOCRClient(OCRClient):
     def __init__(self):
@@ -44,4 +46,4 @@ class VllmOCRClient(OCRClient):
             )
             return chat_response.choices[0].message.content
         except:
-            print("VLLM OCR Client ERROR: Cannot communicate with the inference server")
+            logger.error("VLLM OCR Client ERROR: Cannot communicate with the inference server")

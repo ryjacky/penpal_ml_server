@@ -3,6 +3,9 @@ from modules.llm.types import Chat
 from modules.llm.llm_client import LLMClient
 from modules.worker.types import JourneyMessage
 import clients as clients
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_message(journey_messages_id) -> JourneyMessage:
     message = clients.supabase_client.table("journey_messages").select("*").eq("id", journey_messages_id).execute().data[0]
@@ -41,7 +44,7 @@ def insert_message(journey_id, user_id):
 
     response: str = clients.chat_client.get_chat_response(journey_chats, bot_name=journey_info["chatbot_name"], bot_bg=journey_info["chatbot_description"], writing_prompt=journey_info["essay_title"])
     if response is None:
-        print("Response is None, not inserting new messages!")
+        logger.warning("Response is None, not inserting new messages!")
         return
 
     response = response.split(":", 1)[-1].strip()

@@ -3,7 +3,9 @@ from typing import List
 from modules.llm.llm_client import LLMClient
 from modules.llm.types import Chat, Pal
 from openai import OpenAI
+import logging
 
+logger = logging.getLogger(__name__)
 
 class VLLMClient(LLMClient):
     def __init__(self):
@@ -29,7 +31,7 @@ class VLLMClient(LLMClient):
             )
             return completion.choices[0].message.content
         except:
-            print("VLLMClient ERROR: Cannot communicate with the LLM server")
+            logger.error("VLLMClient ERROR: Cannot communicate with the LLM server")
             
 
     def get_chat_response(self, chats: List[Chat], bot_name: str, bot_bg: str, writing_prompt: str) -> str | None:
@@ -46,9 +48,11 @@ class VLLMClient(LLMClient):
         prompt = "\n".join(formatted_chats) + "\n---\nWrite a summary for the above chat, focus on the result of the chat like what they've decided."
         return self.send(prompt, "You are a helpful linguistic, who is good at writing useful chat summaries.")
 
-    def generate_pals(self, prompt: str) -> Pal:
+    def generate_pals(self, prompt: str) -> Pal | None:
         prompt = f"You are provided with the following essay prompt:\n\"{prompt}\"\n\nImagine someone who is interested in this essay topic, and create a character that relates to the topic. Provide both his **name**, and his **detailed** background."
         raw_pal = self.send(prompt, "You are a helpful character designer, who is good at creating characters with depth based on any information.")
+        if raw_pal is None: return None
+
         raw_pal = raw_pal.split("Character background:")
 
         return Pal(
