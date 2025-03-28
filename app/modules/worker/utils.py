@@ -40,6 +40,10 @@ def insert_message(journey_id, user_id):
         return
 
     response: str = clients.chat_client.get_chat_response(journey_chats, bot_name=journey_info["chatbot_name"], bot_bg=journey_info["chatbot_description"], writing_prompt=journey_info["essay_title"])
+    if response is None:
+        print("Response is None, not inserting new messages!")
+        return
+
     response = response.split(":", 1)[-1].strip()
 
     new_message = {"journey_id": journey_id, "content": response, "is_from_user": False, "user_id": user_id}
@@ -48,4 +52,7 @@ def insert_message(journey_id, user_id):
 def create_summary(journey_id, journey_chats: list[Chat], bot_name):
     clients.supabase_client.table("journey").update({"summaries": "Generating summaries..."}).eq("id", journey_id).execute()
     response = clients.chat_client.summarize_chat(journey_chats, bot_name=bot_name)
+    if response is None:
+        print("Response is None, not inserting new summary!")
+        return
     clients.supabase_client.table("journey").update({"summaries": response}).eq("id", journey_id).execute()

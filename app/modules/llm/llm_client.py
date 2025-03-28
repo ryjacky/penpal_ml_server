@@ -12,11 +12,11 @@ class LLMClient(ABC):
         pass
 
     @abstractmethod
-    def get_chat_response(self, chats: List[Chat], bot_name: str, bot_bg: str, writing_prompt: str) -> str:
+    def get_chat_response(self, chats: List[Chat], bot_name: str, bot_bg: str, writing_prompt: str) -> str | None:
         pass
 
     @abstractmethod
-    def summarize_chat(self, chats: List[Chat], bot_name: str) -> str:
+    def summarize_chat(self, chats: List[Chat], bot_name: str) -> str | None:
         pass
 
     @abstractmethod
@@ -24,13 +24,13 @@ class LLMClient(ABC):
         pass
 
     @abstractmethod
-    def get_language_suggestion(self, writing: str, writing_prompt: str) -> str:
+    def get_language_suggestion(self, writing: str, writing_prompt: str) -> str | None:
         pass
 
     @abstractmethod
-    def get_content_suggestion(self, writing: str, writing_prompt: str) -> str:
+    def get_content_suggestion(self, writing: str, writing_prompt: str) -> str | None:
         pass
 
     @abstractmethod
-    def get_organization_suggestion(self, writing: str, writing_prompt: str) -> str:
+    def get_organization_suggestion(self, writing: str, writing_prompt: str) -> str | None:
         pass
