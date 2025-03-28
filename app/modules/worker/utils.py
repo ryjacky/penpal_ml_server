@@ -49,6 +49,9 @@ def insert_message(journey_id, user_id):
     new_message = {"journey_id": journey_id, "content": response, "is_from_user": False, "user_id": user_id}
     clients.supabase_client.table("journey_messages").insert(new_message).execute()
 
+    print("New message inserted.")
+
+
 def create_summary(journey_id, journey_chats: list[Chat], bot_name):
     clients.supabase_client.table("journey").update({"summaries": "Generating summaries..."}).eq("id", journey_id).execute()
     response = clients.chat_client.summarize_chat(journey_chats, bot_name=bot_name)

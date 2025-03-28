@@ -21,7 +21,6 @@ def postgres_changes_insert_callback(payload, *args):
     message: JourneyMessage = get_message(journey_message_id)
     if message.is_from_user:
         insert_message(message.journey_id, message.user_id)
-        print("New message inserted.")
 
 
 def postgres_changes_delete_callback(payload, *args):
