@@ -20,7 +20,7 @@ class LLMClient(ABC):
         pass
 
     @abstractmethod
-    def generate_pals(self, prompt: str) -> Pal:
+    def generate_pals(self, prompt: str) -> Pal | None:
         pass
 
     @abstractmethod

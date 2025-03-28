@@ -13,7 +13,7 @@ class PrototypeLLMClient(LLMClient):
     def summarize_chat(self, chats: List[Chat], bot_name: str) -> str | None:
         return "This is a summary of the chat."
 
-    def generate_pals(self, prompt: str) -> Pal:
+    def generate_pals(self, prompt: str) -> Pal | None:
         return Pal(name="John Doe", occupation="Writer", description="This is a hard coded PAL.")
 
     def get_language_suggestion(self, writing: str, writing_prompt: str) -> str | None:
