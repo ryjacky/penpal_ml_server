@@ -22,7 +22,7 @@ class GeminiOCRClient(OCRClient):
             os.remove("hi.jpg")
             img_ids.append(response.get("id"))
 
-        self.generate(img_ids, writing_prompt, api_key)
+        return self.generate(img_ids, writing_prompt, api_key)
 
     def generate(self, img_ids: list[str], writing_prompt: str, api_key) -> str:
         headers = {
