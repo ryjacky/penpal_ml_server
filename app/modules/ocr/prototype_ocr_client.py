@@ -10,6 +10,6 @@ class PrototypeOCRClient(OCRClient):
     def __init__(self):
         pass
 
-    def extract_writing(self, url: str) -> str:
+    def extract_writing(self, images: list[Image]) -> str:
         # Hardcoded output
         return "This is a hardcoded text extracted from the image."

@@ -9,6 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+@DeprecationWarning
 class VllmOCRClient(OCRClient):
     def __init__(self):
         super().__init__()
