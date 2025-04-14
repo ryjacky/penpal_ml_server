@@ -50,7 +50,7 @@ class GeminiOCRClient(OCRClient):
         }
 
         response = requests.post('https://api.dify.ai/v1/chat-messages', headers=headers, json=json_data)
-
+        print(response.content.decode('utf-8'))
 
     def upload_image(self, user_id: str, file_path: str):
         """

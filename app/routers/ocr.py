@@ -1,16 +1,16 @@
 from typing import Annotated
 
 from PIL.Image import Image
+from clients import ocr_client
 from modules.auth.authorization import validate_session_with_supabase
 from modules.ocr.ocr_client import OCRClient
-from modules.ocr.prototype_ocr_client import PrototypeOCRClient
 from modules.ocr.types import ImageContent
 from fastapi import APIRouter, UploadFile, Depends, HTTPException
 
 from modules.ocr.preprocessing import pre_process_image
 
 ocr_router = APIRouter(prefix="/ocr")
-client: OCRClient = PrototypeOCRClient()
+client: OCRClient = ocr_client
 
 @ocr_router.post("/text")
 async def get_text(
