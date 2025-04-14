@@ -1,10 +1,7 @@
-import base64
 import tempfile
 from typing import List
 import requests
 from PIL.Image import Image
-from google import genai
-from google.genai import types
 from .ocr_client import OCRClient
 import os
 
