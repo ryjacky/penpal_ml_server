@@ -1,12 +1,15 @@
+# Modified from https://github.com/supabase/realtime-py/blob/v2.2.0/example/app.py
+
 import asyncio
-import os
 import ssl
 
 from realtime import AsyncRealtimeChannel, AsyncRealtimeClient
 
-from modules.worker.utils import insert_message, is_bot
+from modules.worker.utils import get_message, get_chats, insert_message
+import clients as clients
+import os
 
-
+from modules.worker.types import JourneyMessage
 
 def postgres_changes_callback(payload, *args):
     print("*: ", payload)
@@ -14,6 +17,10 @@ def postgres_changes_callback(payload, *args):
 
 def postgres_changes_insert_callback(payload, *args):
     print("INSERT: ", payload)
+    journey_message_id = payload["data"]["record"]["id"]
+    message: JourneyMessage = get_message(journey_message_id)
+    if message.is_from_user:
+        insert_message(message.journey_id, message.user_id)
 
 
 def postgres_changes_delete_callback(payload, *args):
@@ -21,10 +28,6 @@ def postgres_changes_delete_callback(payload, *args):
 
 
 def postgres_changes_update_callback(payload, *args):
-    inbox_id = payload["data"]["record"]["id"]
-    user_id = is_bot(inbox_id)
-    if user_id:
-        insert_message(inbox_id, user_id)
     print("UPDATE: ", payload)
 
 
@@ -37,14 +40,14 @@ async def test_postgres_changes(socket: AsyncRealtimeClient):
     channel = socket.channel("test-postgres-changes")
 
     await channel.on_postgres_changes(
-
-        "UPDATE", table="inbox", callback=postgres_changes_update_callback
+        "INSERT", table="journey_messages", callback=postgres_changes_insert_callback
     ).subscribe()
 
     await socket.listen()
 
 
 async def chatbot_worker():
+
     URL = os.getenv("SUPABASE_URL")
     JWT = os.getenv("SUPABASE_KEY")
 
@@ -56,3 +59,6 @@ async def chatbot_worker():
     await socket.connect()
 
     await test_postgres_changes(socket)
+
+    # Cleanup
+    await socket.remove_all_channels()

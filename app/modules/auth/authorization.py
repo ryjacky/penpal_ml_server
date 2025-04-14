@@ -3,12 +3,7 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from supabase import create_client, Client
-
-url: str = os.environ.get("SUPABASE_URL")
-key: str = os.environ.get("SUPABASE_KEY")
-
-supabase: Client = create_client(url, key)
+import clients as clients
 
 security = HTTPBearer()
 
@@ -16,7 +11,7 @@ security = HTTPBearer()
 def validate_session_with_supabase(credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)]):
     try:
         # Validate the session ID with Supabase
-        user = supabase.auth.get_user(credentials.credentials)
+        user = clients.supabase_client.auth.get_user(credentials.credentials)
         return
     except Exception as e:
         raise HTTPException(

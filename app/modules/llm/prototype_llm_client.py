@@ -7,20 +7,20 @@ class PrototypeLLMClient(LLMClient):
     def __init__(self):
         super().__init__()
 
-    def get_chat_response(self, chats: List[Chat]) -> str:
+    def get_chat_response(self, chats: List[Chat], bot_name: str, bot_bg: str, writing_prompt: str) -> str | None:
         return "This is a hardcoded chat response."
 
-    def summarize_chat(self, chats: List[Chat]) -> str:
+    def summarize_chat(self, chats: List[Chat], bot_name: str) -> str | None:
         return "This is a summary of the chat."
 
-    def generate_pals(self, prompt: str) -> Pal:
+    def generate_pals(self, prompt: str) -> Pal | None:
         return Pal(name="John Doe", occupation="Writer", description="This is a hard coded PAL.")
 
-    def get_language_suggestion(self, writing: str) -> str:
+    def get_language_suggestion(self, writing: str, writing_prompt: str) -> str | None:
         return "The language is very very good, this is hard coded"
 
-    def get_content_suggestion(self, writing: str) -> str:
+    def get_content_suggestion(self, writing: str, writing_prompt: str) -> str | None:
         return "The content is very very good, this is hard coded"
 
-    def get_organization_suggestion(self, writing: str) -> str:
+    def get_organization_suggestion(self, writing: str, writing_prompt: str) -> str | None:
         return "The organization is very very good, this is hard coded"

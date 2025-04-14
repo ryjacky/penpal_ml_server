@@ -5,30 +5,9 @@ from modules.llm.llm_client import LLMClient
 from modules.llm.prototype_llm_client import PrototypeLLMClient
 from modules.llm.types import Chat, ChatSummary, Pal, WritingSuggestion
 from fastapi import APIRouter, Depends
+import clients as clients
 
 llm_router = APIRouter(prefix="/llm")
-client: LLMClient = PrototypeLLMClient()
-
-@llm_router.post("/reply")
-def chat(
-        chats: List[Chat],
-        credentials: Annotated[str, Depends(validate_session_with_supabase)]) -> List[Chat]:
-    """
-    Receive a list of chat messages and return a list of chat messages with the bot's response.
-    The last message in the list will be the bot's response.
-    """
-    return chats + [Chat(role="assistant", content=client.get_chat_response(chats))]
-
-
-@llm_router.post("/chat_summary")
-async def summarize(
-        chats: List[Chat],
-        credentials: Annotated[str, Depends(validate_session_with_supabase)]) -> ChatSummary:
-    """
-    It receives a message in ChatML format and returns a response in ChatML format with a summary
-     as the last bot message.
-    """
-    return ChatSummary(summary=client.summarize_chat(chats))
 
 
 @llm_router.post("/pals")
@@ -38,18 +17,4 @@ async def get_pals(
     """
     Receives an essay prompt and returns an array of three character profiles based on the prompt.
     """
-    return [client.generate_pals(prompt)]
-
-@llm_router.post("/suggestion")
-async  def get_writing_suggestion(
-        writing: str,
-        credentials: Annotated[str, Depends(validate_session_with_supabase)]) -> WritingSuggestion:
-    """
-    Receives a written essay and returns a list of generated suggestions about the writing.
-    """
-
-    return WritingSuggestion(
-        lang_suggestion=client.get_language_suggestion(writing),
-        org_suggestion=client.get_organization_suggestion(writing),
-        content_suggestion=client.get_content_suggestion(writing)
-    )
+    return [clients.chat_client.generate_pals(prompt)]
