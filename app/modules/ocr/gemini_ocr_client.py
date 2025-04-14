@@ -1,4 +1,6 @@
-import tempfile
+import random
+import string
+import time
 from typing import List
 import requests
 from PIL.Image import Image
@@ -8,68 +10,60 @@ import os
 class GeminiOCRClient(OCRClient):
     def __init__(self):
         super().__init__()
+        os.environ["DIFY_KEY"]= ""
 
     def extract_writing(self, images: List[Image], writing_prompt: str) -> str:
         img_ids: list[str] = []
+        api_key = os.getenv("DIFY_KEY")
+
         for image in images:
-            with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as temp_file:
-                image.save(temp_file.name, format="JPEG")
-                temp_file_path = temp_file.name
-                
-            response = self.upload_image(user_id="abc-123", file_path=temp_file_path)
+            image.save("hi.jpg", format="JPEG")
+            response = self.upload_file_to_dify("hi.jpg", "abc-123", api_key)
+            print(response)
+            os.remove("hi.jpg")
             img_ids.append(response.get("id"))
-            os.remove(temp_file_path)
 
-        self.generate(img_ids, writing_prompt)
+        self.generate(img_ids, writing_prompt, api_key)
 
-    def generate(self, img_ids: List[str], writing_prompt: str) -> str:
+    def generate(self, img_ids: list[str], writing_prompt: str, api_key) -> str:
         headers = {
-            'Authorization': 'Bearer {api_key}',
+            'Authorization': f'Bearer {api_key}',
             'Content-Type': 'application/json',
         }
 
-        files: list[dict[str,str]] = []
-        for img_id in img_ids:
-            files.append({
-                'type': 'image',
-                'transfer_method': 'local_file',
-                'upload_file_id': img_id,
-            })
         json_data = {
             'inputs': {"writing_prompt": writing_prompt},
-            'query': '<NOT RELATED NOT USED>',
+            'query': 'What are the specs of the iPhone 13 Pro Max?',
             'response_mode': 'blocking',
             'conversation_id': '',
             'user': 'abc-123',
             'files': [
-                files
+                {
+                    'type': 'image',
+                    'transfer_method': 'local',
+                    'upload_file_id': img_id,
+                } for img_id in img_ids
             ],
         }
 
         response = requests.post('https://api.dify.ai/v1/chat-messages', headers=headers, json=json_data)
-        print(response.content.decode('utf-8'))
+        writing = response.json()["answer"].split("---")[-1].strip()
+        print(writing)
+        return writing
 
-    def upload_image(self, user_id: str, file_path: str):
-        """
-        Uploads an image to the Dify API.
 
-        Args:
-            api_key (str): The API key for authentication.
-            file_path (str): The local file path of the image to upload.
-            user_id (str): The user ID to associate with the upload.
 
-        Returns:
-            dict: The response from the API.
-        """
-        url = "https://api.dify.ai/v1/files/upload"
+    def upload_file_to_dify(self, file_path, user, api_key):
         headers = {
-            "Authorization": f"Bearer {os.getenv('DIFY_KEY')}",
-        }
-        files = {
-            "file": (file_path, open(file_path, "rb"), "image/jpeg"),
-            "user": (None, user_id)
+            'Authorization': f'Bearer {api_key}',
         }
 
-        response = requests.post(url, headers=headers, files=files)
-        response.raise_for_status()  # Raise an error for bad status codes
+        filename = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+        files = {
+            'file': (f'{filename}.jpg', open(file_path, 'rb'), 'image/jpeg'),
+            'user': (None, user),
+        }
+
+        response = requests.post('https://api.dify.ai/v1/files/upload', headers=headers, files=files)
         return response.json()
