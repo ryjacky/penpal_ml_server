@@ -10,7 +10,6 @@ import os
 class GeminiOCRClient(OCRClient):
     def __init__(self):
         super().__init__()
-        os.environ["DIFY_KEY"]= ""
 
     def extract_writing(self, images: List[Image], writing_prompt: str) -> str:
         img_ids: list[str] = []
