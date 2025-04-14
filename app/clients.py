@@ -2,9 +2,9 @@ import os
 
 from supabase import create_client, Client
 
-from app.modules.ocr.gemini_ocr_client import GeminiOCRClient
-from app.modules.ocr.ocr_client import OCRClient
-from app.modules.ocr.prototype_ocr_client import PrototypeOCRClient
+from modules.ocr.gemini_ocr_client import GeminiOCRClient
+from modules.ocr.ocr_client import OCRClient
+from modules.ocr.prototype_ocr_client import PrototypeOCRClient
 from modules.llm.vllm_client import VLLMClient
 from modules.llm.llm_client import LLMClient
 from modules.llm.prototype_llm_client import PrototypeLLMClient
