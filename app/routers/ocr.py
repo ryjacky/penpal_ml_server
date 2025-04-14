@@ -15,6 +15,7 @@ client: OCRClient = ocr_client
 @ocr_router.post("/text")
 async def get_text(
         files: list[UploadFile],
+        writing_prompt: str,
         credentials: Annotated[str, Depends(validate_session_with_supabase)]) -> ImageContent:
     """
     Receives an image file that is cropped to the bounds of the document page.
@@ -46,4 +47,4 @@ async def get_text(
     #     result.content += f" {recognize_text(line_seg.image)}"
     #     print(f"Recognized text: {recognize_text(line_seg.image)}")
 
-    return ImageContent(content=client.extract_writing(scan_images))
+    return ImageContent(content=client.extract_writing(scan_images, writing_prompt))
