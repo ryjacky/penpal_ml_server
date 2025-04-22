@@ -29,9 +29,10 @@ def on_writing_inserted(payload, *args):
 
         response = [future.result() for future in futures]
 
-        lang: str = response[0].split("Comments (Language):")
-        org: str = response[1].split("Comments (Organization):")
-        content: str = response[2].split("Comments (Content):")
+
+        lang: list[str] | None = None if response[0] is None else response[0].split("Comments (Language):")
+        org: list[str] | None = None if response[1] is None else response[1].split("Comments (Organization):")
+        content: list[str] | None = None if response[2] is None else response[2].split("Comments (Content):")
 
     try:
         clients.supabase_client.table("uploaded_writings").update({
