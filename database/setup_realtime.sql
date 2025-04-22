@@ -11,4 +11,4 @@ commit;
 
 -- add the table 'journey_messages' to the publication
 alter
-  publication supabase_realtime add table journey_messages;
+  publication supabase_realtime add table journey_messages, uploaded_writings;
