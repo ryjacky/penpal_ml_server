@@ -9,5 +9,5 @@ class OCRClient(ABC):
         pass
 
     @abstractmethod
-    def extract_writing(self, url: str) -> str:
+    def extract_writing(self, images: list[Image], writing_prompt: str) -> str:
         pass

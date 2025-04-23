@@ -2,6 +2,9 @@ import os
 
 from supabase import create_client, Client
 
+from modules.ocr.gemini_ocr_client import GeminiOCRClient
+from modules.ocr.ocr_client import OCRClient
+from modules.ocr.prototype_ocr_client import PrototypeOCRClient
 from modules.llm.vllm_client import VLLMClient
 from modules.llm.llm_client import LLMClient
 from modules.llm.prototype_llm_client import PrototypeLLMClient
@@ -14,3 +17,9 @@ if mode == "VLLM":
     chat_client: LLMClient = VLLMClient()
 else:
     chat_client: LLMClient = PrototypeLLMClient()
+
+ocr_mode = os.getenv("OCR_MODE")
+if ocr_mode == "GEMINI":
+    ocr_client: OCRClient = GeminiOCRClient()
+else:
+    ocr_client: OCRClient = PrototypeOCRClient()

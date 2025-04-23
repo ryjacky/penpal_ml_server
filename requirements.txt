@@ -8,3 +8,6 @@ fastapi-cli==0.0.7
 python-multipart==0.0.20
 pydantic~=2.10.6
 openai~=1.68.0
+requests==2.32.3
+google-cloud-aiplatform==1.90.0
+google-genai==1.11.0
