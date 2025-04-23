@@ -6,63 +6,84 @@ import requests
 from PIL.Image import Image
 from .ocr_client import OCRClient
 import os
+from io import BytesIO
+
+from google import genai
+from google.genai import types
+import base64
 
 class GeminiOCRClient(OCRClient):
     def __init__(self):
         super().__init__()
+        self.prompt = "Extract the text from the image. If the text contains a student writing, please extract the writing and ignore the rest. The writing is in English. The image may contain some noise, but the text is clear. Please do not include any other information in your response. Just return the extracted text."
+        self.prompt = os.getenv("GEMINI_PROMPT", self.prompt)
 
-    def extract_writing(self, images: List[Image], writing_prompt: str) -> str:
-        img_ids: list[str] = []
-        api_key = os.getenv("DIFY_KEY")
+    def to_base64(self, image: Image) -> bytes:
 
+        buffered = BytesIO()
+        image.save(buffered, format="JPEG")
+        img_str = buffered.getvalue()
+        return img_str
+    
+    def extract_writing(self, images: list[Image], writing_prompt: str) -> str:
+
+        img_parts = []
         for image in images:
-            image.save("hi.jpg", format="JPEG")
-            response = self.upload_file_to_dify("hi.jpg", "abc-123", api_key)
-            print(response)
-            os.remove("hi.jpg")
-            img_ids.append(response.get("id"))
+            img_parts.append(  types.Part.from_bytes(
+                data=self.to_base64(image),
+                      mime_type="image/jpeg",
 
-        return self.generate(img_ids, writing_prompt, api_key)
-
-    def generate(self, img_ids: list[str], writing_prompt: str, api_key) -> str:
-        headers = {
-            'Authorization': f'Bearer {api_key}',
-            'Content-Type': 'application/json',
-        }
-
-        json_data = {
-            'inputs': {"writing_prompt": writing_prompt},
-            'query': 'What are the specs of the iPhone 13 Pro Max?',
-            'response_mode': 'blocking',
-            'conversation_id': '',
-            'user': 'abc-123',
-            'files': [
-                {
-                    'type': 'image',
-                    'transfer_method': 'local',
-                    'upload_file_id': img_id,
-                } for img_id in img_ids
-            ],
-        }
-
-        response = requests.post('https://api.dify.ai/v1/chat-messages', headers=headers, json=json_data)
-        writing = response.json()["answer"].split("---")[-1].strip()
-        print(writing)
-        return writing
+                )
+            )
+        return self.generate(img_parts)
 
 
+    def generate(self, images):
+        client = genai.Client(
+            vertexai=True,
+            project="profound-jet-453603-h0",
+            location="us-central1",
+        )
 
-    def upload_file_to_dify(self, file_path, user, api_key):
-        headers = {
-            'Authorization': f'Bearer {api_key}',
-        }
+        model = "gemini-2.0-flash-001"
+        contents = [
+            types.Content(
+            role="user",
+            parts=[
+                  types.Part.from_text(text=self.prompt)
+            ] + images
+            )
+        ]
+        generate_content_config = types.GenerateContentConfig(
+            temperature = 1,
+            top_p = 0.95,
+            max_output_tokens = 8192,
+            response_modalities = ["TEXT"],
+            speech_config = types.SpeechConfig(
+            voice_config = types.VoiceConfig(
+                prebuilt_voice_config = types.PrebuiltVoiceConfig(
+                voice_name = "zephyr"
+                )
+            ),
+            ),
+            safety_settings = [types.SafetySetting(
+            category="HARM_CATEGORY_HATE_SPEECH",
+            threshold="OFF"
+            ),types.SafetySetting(
+            category="HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold="OFF"
+            ),types.SafetySetting(
+            category="HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold="OFF"
+            ),types.SafetySetting(
+            category="HARM_CATEGORY_HARASSMENT",
+            threshold="OFF"
+            )],
+        )
 
-        filename = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
-        files = {
-            'file': (f'{filename}.jpg', open(file_path, 'rb'), 'image/jpeg'),
-            'user': (None, user),
-        }
-
-        response = requests.post('https://api.dify.ai/v1/files/upload', headers=headers, files=files)
-        return response.json()
+        for chunk in client.models.generate_content_stream(
+            model = model,
+            contents = contents,
+            config = generate_content_config,
+            ):
+            print(chunk.text, end="")
