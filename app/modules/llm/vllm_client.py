@@ -35,16 +35,15 @@ class VLLMClient(LLMClient):
             
 
     def get_chat_response(self, chats: List[Chat], bot_name: str, bot_bg: str, writing_prompt: str) -> str | None:
-        formatted_chats = (["1. User: Hi, can we talk about the essay topic? We can perhaps deep dive into the topic together?"] +
-                           [f"{i + 2}. {bot_name}: {chat.content}" for i, chat in enumerate(chats)])
+        formatted_chats: List[str] = [f"{i}. {bot_name if chat.role == "assistant" else "User"}: {chat.content}" for i, chat in enumerate(chats)]
         prompt = f"# Task\n- Pretend that your are {bot_name}, respond to the chat based on the provided information.\n# {bot_name}'s Background\n- {bot_bg} \n\n# Rules\n- Only output {bot_name}'s response without any explanation.\n- Output format should be `<chat_round>. {bot_name}: <response>`\n- Be natural and simulate a real world chat.\n# Context\nYou are having a **deep dive** chat with \"User\" about the writing prompt - \"{writing_prompt}\"\nYou want to share how would you write a passage about the writing prompt, what you think about the writing prompt, or anything you want to share with the user about the writing prompt. Make use of your own knowledge and experience. Don't be afraid to make up your experience beyound the given background, be creative.\n# **Chat**\n{"\n".join(formatted_chats)}"
         return self.send(prompt, "You are a professional actor, who is good at role-playing different characters based on the provided background, at the same time, you strictly follows the restrictions.")
 
 
     def summarize_chat(self, chats: List[Chat], bot_name: str) -> str | None:
 
-        formatted_chats = (["1. User: Hi, can we talk about the essay topic? We can perhaps deep dive into the topic together?"] +
-                           [f"{i + 2}. {bot_name}: {chat.content}" for i, chat in enumerate(chats)])
+        formatted_chats: List[str] = [f"{i}. {bot_name if chat.role == "assistant" else "User"}: {chat.content}" for i, chat in enumerate(chats)]
+
         prompt = "\n".join(formatted_chats) + "\n---\nWrite a summary for the above chat, focus on the result of the chat like what they've decided."
         return self.send(prompt, "You are a helpful linguistic, who is good at writing useful chat summaries.")
 
